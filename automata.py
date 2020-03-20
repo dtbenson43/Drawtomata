@@ -17,33 +17,71 @@ class Automata:
   def createState(self, num):
     return State(num, canvas=self.canvas)
   
-  def parseNumStates(strNumStates):
+  def parseNumStates(self, tokens):
     try:
-      numStates = int(strNumStates)
-      self.numStates = numStates
+      numStates = int(tokens[0])
     except:
       raise ValueError('Number of states is not a valid integer')
+    return numStates
 
-  def parseAlphabet(strAlphabet):
-    self.alphabet = tokens[1].split(",")
-    for i in range(len(self.alphabet)):
-      self.alphabet[i] = self.alphabet[i].strip()
+  def parseAlphabet(self, tokens):
+    try:
+      alphabet = tokens[1].split(",")
+    except:
+      raise ValueError('Alphabet not provided')
 
-  def parseTransitions(transitions):
-    print("transitions")
+    if len(alphabet) == 0:
+      raise ValueError('Alphabet not provided')
+
+    for i in range(len(alphabet)):
+      alphabet[i] = alphabet[i].strip()
+    return alphabet
+
+  def parseTransitions(self, tokens):
+    try:
+      transitions = tokens[2].split(",")
+    except:
+      raise ValueError('Transitions not provided')
+    if len(transitions) == 0:
+      raise ValueError('Transitions not provided')
+
+    for i in range(len(transitions)):
+      transition = transitions[i].replace("(", "").replace(")", "").split(":")
+      if len(transition) != 3:
+        raise ValueError('Transition \'{}\' is malformed'.format(transitions[i]))
+      transitions[i] = transition
+    return transitions
+
+  def parseStartState(self, tokens):
+    try:
+      startState = int(tokens[3])
+    except:
+      raise ValueError('Start state is not a valid integer')
+    return startState
+
+  def parseAcceptStates(self, tokens):
+    try:
+      acceptStates = tokens[4].split(",")
+    except:
+      raise ValueError('Accept states not provided')
+    if len(acceptStates) == 0:
+      raise ValueError('Accept states not provided')
+
+    for i in range(len(self.acceptStates)):
+      try:
+        acceptStates[i] = int(acceptStates[i])
+      except:
+        raise ValueError('Accept state \'{}\' is not a valid integer'.format(acceptStates[i]))
+    return acceptStates
 
   def parseDataString(self, dataString):
     tokens = dataString.split(";")
-    self.numStates = int(tokens[0])
-    self.alphabet = tokens[1].split(",")
-    for i in range(len(self.alphabet)):
-      self.alphabet[i] = self.alphabet[i].strip()
-
-    self.transitions = tokens[2].split(",")
-    self.startState = int(tokens[3])
-    self.acceptStates = tokens[4].split(",")
-    for i in range(len(self.acceptStates)):
-      self.acceptStates[i] = int(self.acceptStates[i])
+    self.numStates = self.parseNumStates(tokens)
+    self.alphabet = self.parseAlphabet(tokens)
+    self.transitions = self.parseTransitions(tokens)
+    self.startState = self.parseStartState(tokens)
+    self.acceptStates = self.parseAcceptStates(tokens)
+    print(self.transitions)
 
     for i in range(self.numStates):
       state = self.createState(i)
@@ -52,8 +90,6 @@ class Automata:
       self.states.append(state)
     
     for i in range(len(self.transitions)):
-      transition = self.transitions[i].replace("(", "").replace(")", "").split(":")
-      self.transitions[i] = transition
 
       if transition[0] not in self.transitionDict:
         self.transitionDict[transition[0]] = {}
