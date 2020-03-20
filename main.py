@@ -12,8 +12,6 @@ PAD = 3
 def main():
   
   # get data from file
-  data = None
-  
   with open(FILEPATH) as f:
     data = f.readline()
 

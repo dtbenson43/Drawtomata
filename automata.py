@@ -17,6 +17,21 @@ class Automata:
   def createState(self, num):
     return State(num, canvas=self.canvas)
   
+  def parseNumStates(strNumStates):
+    try:
+      numStates = int(strNumStates)
+      self.numStates = numStates
+    except:
+      raise ValueError('Number of states is not a valid integer')
+
+  def parseAlphabet(strAlphabet):
+    self.alphabet = tokens[1].split(",")
+    for i in range(len(self.alphabet)):
+      self.alphabet[i] = self.alphabet[i].strip()
+
+  def parseTransitions(transitions):
+    print("transitions")
+
   def parseDataString(self, dataString):
     tokens = dataString.split(";")
     self.numStates = int(tokens[0])
