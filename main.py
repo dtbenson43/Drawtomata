@@ -1,6 +1,7 @@
 from tkinter import Tk, Frame, BOTH
 from automataCanvas import AutomataCanvas
 from automata import Automata
+from automataUtilities import angleClockwise
 
 FILEPATH = "automataData" ## automata data file
 WIDTH = 506               ## window width
@@ -10,7 +11,9 @@ FRAME_HEIGHT = 500
 PAD = 3
 
 def main():
-  
+  # one = angleClockwise((370.0, 90.0), (130.0, 90.0))
+  # two = angleClockwise((50.0, 90.0), (130.0, 90.0))
+  # print(one, two)
   # get data from file
   with open(FILEPATH) as f:
     data = f.readline()

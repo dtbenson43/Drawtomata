@@ -20,12 +20,37 @@ class AutomataCanvas(Canvas):
     self.height = height
     self.automata = automata if automata != None else Automata(data)
     self.grid = CanvasGrid(width=width, height=height)
-    # self.drawGrid()s
-    self.drawCircle()
+    self.drawAutomata()
 
   def drawAutomata(self):
-    state = self.automata.states[self.automata.startState]
-    self.drawState(state, [])
+    startingX = 10
+    startingY = 50
+    x = startingX
+    y = startingY
+    stateBuffer = 50
+    states = self.automata.getStates()
+    transitions = self.automata.getTransitions()
+
+    for state in states:
+      state.setCanvas(self)
+      size = state.getDiameter() + stateBuffer
+      while self.grid.isBoxFree(x, y, size) == False:
+        x += size
+        if x >= self.width:
+          x = startingX
+          y += size
+      self.grid.occupyBox(x+(stateBuffer / 2), y+(stateBuffer / 2), state.getDiameter())
+      state.setLocation(x+(stateBuffer / 2), y+(stateBuffer / 2))
+
+    for transition in transitions:
+      # transition = transitions[1]
+      transition.setCanvas(self)
+      fromState = states[transition.getOriginState()]
+      toState = states[transition.getNextState()]
+      transition.draw(fromState, toState)
+  
+    for state in states:
+      state.draw()
   
   def drawGrid(self):
     for x in range(int(51)):
